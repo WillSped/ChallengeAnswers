@@ -1,0 +1,90 @@
+CREATE DATABASE IF NOT EXISTS OnlineShop;
+USE OnlineShop;
+CREATE TABLE Users (
+UserID INT AUTO_INCREMENT,
+FirstName VARCHAR(50) NOT NULL,
+Surname VARCHAR(50) NOT NULL,
+Age INT NOT NULL,
+Email VARCHAR (50) NOT NULL UNIQUE,
+PRIMARY KEY(UserID)
+);
+CREATE TABLE Products (
+ProductID INT AUTO_INCREMENT,
+Name VARCHAR(50) NOT NULL UNIQUE,
+Price DECIMAL(5,2) NOT NULL,
+Stock INT NOT NULL,
+PRIMARY KEY(ProductID)
+);
+CREATE TABLE Orders (
+OrderID INT AUTO_INCREMENT,
+Time DATE NOT NULL,
+UserID INT NOT NULL,
+ProductID INT NOT NULL, 
+PRIMARY KEY(OrderID),
+FOREIGN KEY(UserID) REFERENCES Users(UserID),
+FOREIGN KEY(ProductID) REFERENCES Products(ProductID)
+);
+CREATE TABLE OrderLine (
+OrderLineID INT AUTO_INCREMENT,
+OrderID INT NOT NULL,
+UserID INT NOT NULL,
+PRIMARY KEY(OrderLineID),
+FOREIGN KEY(OrderID) REFERENCES Orders(OrderID),
+FOREIGN KEY(UserID) REFERENCES Users(UserID)
+);
+
+INSERT INTO Users(FirstName, Surname, Age, email) VALUES ('Jim', 'Jimson', 47, 'JimIsCool@mail.com');
+INSERT INTO Users(FirstName, Surname, Age, email) VALUES ('Bob', 'Bobberson', 97, 'Bobby@mail.com');
+INSERT INTO Users(FirstName, Surname, Age, email) VALUES ('Mo', 'Salah', 29, 'TheKing@mail.com');
+INSERT INTO Users(FirstName, Surname, Age, email) VALUES ('Anne', 'Jones', 35, 'AnneJ@mail.com');
+INSERT INTO Users(FirstName, Surname, Age, email) VALUES ('Ash', 'Smith', 19, 'Asher@mail.com');
+
+INSERT INTO Products(Name, Price, Stock) VALUES ('ChocolateTeapot', 19.99, 42);
+INSERT INTO Products(Name, Price, Stock) VALUES ('WaterproofFishbowl', 29.99, 14);
+INSERT INTO Products(Name, Price, Stock) VALUES ('WetLighter', 9.99, 93);
+INSERT INTO Products(Name, Price, Stock) VALUES ('HelicopterRoofRack', 99.99, 7);
+INSERT INTO Products(Name, Price, Stock) VALUES ('WoodenFryingPan', 24.99, 32);
+
+INSERT INTO Orders(Time, UserID, ProductID) VALUES (21/4/2021, 1, 3);
+INSERT INTO Orders(Time, UserID, ProductID) VALUES (1/9/2021, 2, 4);
+INSERT INTO Orders(Time, UserID, ProductID) VALUES (22/5/2021, 3, 1);
+INSERT INTO Orders(Time, UserID, ProductID) VALUES (12/6/2021, 4, 2);
+INSERT INTO Orders(Time, UserID, ProductID) VALUES (24/12/2021, 5, 5);
+
+INSERT INTO OrderLine(OrderID, UserID) VALUES (1, 1);
+INSERT INTO OrderLine(OrderID, UserID) VALUES (2, 2);
+INSERT INTO OrderLine(OrderID, UserID) VALUES (3, 3);
+INSERT INTO OrderLine(OrderID, UserID) VALUES (4, 4);
+INSERT INTO OrderLine(OrderID, UserID) VALUES (5, 5);
+
+SELECT * FROM Users;
+
+UPDATE Users
+SET FirstName = 'Bobby'
+WHERE FirstName = 'Bob';
+
+UPDATE Users
+SET Surname = 'Firmino'
+WHERE Surname = 'Bobberson';
+
+UPDATE Orders
+SET Time = 01/01/2021
+WHERE Time = 01/09/2021;
+
+SELECT COUNT(FirstName) FROM Users;
+SELECT MIN(Age) FROM Users;
+SELECT * FROM Products WHERE Price >30;
+SELECT * FROM Users WHERE FirstName = 'Mo';
+SELECT Name, Price FROM Products ORDER BY Price ASC;
+SELECT Name, Price FROM Products ORDER BY Price DESC LIMIT 2;
+SELECT SUM(Price) FROM Products;
+SELECT * FROM Products WHERE Name LIKE '%ck'=(SELECT Name FROM Products WHERE ProductID = 4);
+SELECT * FROM Users u JOIN Orders o ON u.UserID=o.UserID WHERE FirstName='Bobby';
+SELECT * FROM Users u JOIN Orders o ON u.UserID=o.UserID JOIN Products p ON p.ProductID=o.ProductID WHERE Surname='Firmino';
+
+DELETE FROM Users WHERE Surname = 'Jones';
+DELETE FROM Products WHERE Name = 'ChocolateTeapot';
+DELETE FROM Orders WHERE OrderID = 3;
+SET SQL_SAFE_UPDATES=1;
+SET FOREIGN_KEY_CHECKS=1;
+
